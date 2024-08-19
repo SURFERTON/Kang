@@ -82,21 +82,22 @@ class _SignInPageState extends State<SignInPage> {
                       validator: (value) {
                         // add email validation
                         if (value == null || value.isEmpty) {
-                          return '학번을 입력해주세요.';
+                          return '이메일을 입력해주세요.';
                         }
 
-                        bool numberValid = RegExp(r'^[0-9]+$').hasMatch(value);
+                        bool numberValid =
+                            !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
                         if (!numberValid) {
-                          return '숫자를 입력해주세요';
+                          return '이메일을 입력해주세요';
                         }
                         inputEmail = value;
 
                         return null;
                       },
                       decoration: const InputDecoration(
-                        labelText: '학번',
-                        hintText: '학번을 입력하세요.',
-                        prefixIcon: Icon(Icons.account_balance),
+                        labelText: '이메일',
+                        hintText: '이메일을 입력하세요.',
+                        prefixIcon: Icon(Icons.email),
                         border: OutlineInputBorder(),
                       ),
                     ),
@@ -104,13 +105,8 @@ class _SignInPageState extends State<SignInPage> {
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return '공백은 안 된다!!';
+                          return '비밀번호를 입력해주세요.';
                         }
-
-                        if (value.length < 6) {
-                          return '최소한 6글자 이상으로!!';
-                        }
-
                         inputPw = value;
 
                         return null;
@@ -174,7 +170,7 @@ class _SignInPageState extends State<SignInPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MainPage(),
+                                    builder: (context) => HomePage(),
                                   ),
                                 );
                               } else {
