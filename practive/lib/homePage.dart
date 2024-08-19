@@ -126,52 +126,16 @@ class _HomePageState extends State<HomePage> {
   //버튼 눌러서 우측 위젯 변경
   Widget _getSelectedWidget() {
     switch (pageIndex) {
-      case 0:
-        return ProfilePage();
       case 1:
         return Expanded(child: SearchPage());
       case 2:
         return Expanded(child: ManagePage());
-      case 3:
-        return SettingPage();
       default:
-        return ProfilePage();
+        return Expanded(child: SearchPage());
     }
   }
 
   //각 위젯별 페이지
-
-  Widget ProfilePage() {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.lightBlue,
-        centerTitle: true,
-        title: Text(
-          "계정 관리",
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Container(color: Colors.white),
-    );
-  }
-
-  Widget SettingPage() {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.lightBlue,
-        centerTitle: true,
-        title: Text(
-          "설정",
-          style: TextStyle(
-              color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: Container(color: Colors.white),
-    );
-  }
 }
 
 class ManagePage extends StatefulWidget {
