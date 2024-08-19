@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import '../homePage.dart';
 
@@ -39,7 +41,7 @@ class _SignInPageState extends State<SignInPage> {
   String inputPw = "";
 
   String serverURL =
-      "http://127.0.0.1:8000/check"; // local : http://211.243.47.122:3001/check
+      "http://211.243.47.122:3001/login"; // local : http://211.243.47.122:3001/check
 
   @override
   Widget build(BuildContext context) {
@@ -80,15 +82,11 @@ class _SignInPageState extends State<SignInPage> {
                     _gap(),
                     TextFormField(
                       validator: (value) {
-                        // add email validation
                         if (value == null || value.isEmpty) {
                           return '이메일을 입력해주세요.';
-                        }
-
-                        bool numberValid =
-                            !RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value);
-                        if (!numberValid) {
-                          return '이메일을 입력해주세요';
+                        } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
+                            .hasMatch(value)) {
+                          return '올바른 이메일을 입력해주세요.';
                         }
                         inputEmail = value;
 
@@ -148,23 +146,24 @@ class _SignInPageState extends State<SignInPage> {
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
                             final response = await http.post(
-                                Uri.parse(serverURL), //서버에 요청
+                                Uri.parse(serverURL),
                                 headers: <String, String>{
                                   'Content-Type':
                                       'application/json; charset=UTF-8'
-                                }, //여기 변환인가?
+                                },
                                 body: jsonEncode(<String, String>{
                                   'email': inputEmail,
                                   'password': inputPw
-                                }) //전달할 값
-
-                                );
-
+                                }));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      jsonDecode(response.body)['exists'])),
+                            );
                             if (response.statusCode == 200) //서버 에러 확인
                             {
                               final result =
                                   jsonDecode(response.body); // response 번역
-
                               if (result['exists'] == true) // 있으면 페이지 이동
                               {
                                 Navigator.push(
@@ -175,13 +174,13 @@ class _SignInPageState extends State<SignInPage> {
                                 );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('자네는 강팀이 될 수 없다네.')),
+                                  SnackBar(content: Text('회원 정보를 찾을 수 없습니다.')),
                                 );
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('서버 오류가 발생했습니다.')),
-                              );
+                                  //SnackBar(content: Text('서버 오류가 발생했습니다.')),
+                                  SnackBar(content: Text('서버 오류가 발생했습니다.')));
                             }
                           }
                         },
