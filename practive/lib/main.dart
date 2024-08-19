@@ -146,6 +146,29 @@ class _SignInPageState extends State<SignInPage> {
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
                             final response = await http.post(
+                                Uri.parse(serverURL), //서버에 요청
+                                headers: <String, String>{
+                                  'Content-Type':
+                                      'application/json; charset=UTF-8'
+                                }, //여기 변환인가?
+                                body: jsonEncode(<String, String>{
+                                  'email': inputEmail,
+                                  'password': inputPw
+                                }) //전달할 값
+
+                                );
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(
+                                      jsonDecode(response.body)['exists']
+                                          ? "true"
+                                          : "false")),
+                            );
+                            return null;
+                          }
+
+                          if (_formKey.currentState?.validate() ?? false) {
+                            final response = await http.post(
                                 Uri.parse(serverURL),
                                 headers: <String, String>{
                                   'Content-Type':
