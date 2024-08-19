@@ -38,30 +38,64 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(5, 10, 5, 0),
-            width: 200,
-            color: Colors.blue,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text("강 팀",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.bold)),
-                SizedBox(height: 16),
-                _buildMenuButton(Icons.person, '계정', 0),
-                _buildMenuButton(Icons.search, '검색', 1),
-                _buildMenuButton(Icons.computer, '현황', 2),
-                _buildMenuButton(Icons.settings, '설정', 3),
-              ],
+      body: Container(
+        color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Container(
+              child: Center(
+                child: Text(
+                  "TOOK",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 64,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ),
-          ),
-          Expanded(child: _getSelectedWidget())
-        ],
+            SizedBox(height: 10),
+            Container(
+              margin: EdgeInsets.fromLTRB(100, 100, 100, 0),
+              height: 50,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStatePropertyAll(Color.fromRGBO(226, 249, 255, 1)),
+                ),
+                onPressed: () {
+                  _onMenuButtonPressed(1);
+                  // 콜 요청할래요 버튼 클릭 시 동작
+                },
+                child: Text(
+                  '요청할래요!',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            Container(
+              margin: EdgeInsets.fromLTRB(100, 20, 100, 0),
+              height: 50,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      WidgetStatePropertyAll(Color.fromRGBO(226, 249, 255, 1)),
+                ),
+                onPressed: () {
+                  _onMenuButtonPressed(2);
+                },
+                child: Text(
+                  '해줄래요!',
+                  style: TextStyle(
+                      color: Colors.black, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
