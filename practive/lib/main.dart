@@ -1,14 +1,15 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:practive/signIn.dart';
 import '../homePage.dart';
 
 //서버
 import 'package:http/http.dart' as http; // http
 import 'dart:convert'; // JSON 인코딩/디코딩에 필요
 
-//차트
-import 'package:fl_chart/fl_chart.dart';
+//인증
+String? token;
 
 void main() {
   runApp(const MyApp());
@@ -19,29 +20,27 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: SignInPage());
+    return MaterialApp(home: LogInPage());
   }
 }
 
 // 로그인/가입 페이지
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key}) : super(key: key);
+class LogInPage extends StatefulWidget {
+  const LogInPage({Key? key}) : super(key: key);
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  State<LogInPage> createState() => _LogInPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _LogInPageState extends State<LogInPage> {
   bool _isPasswordVisible = false;
-  bool _rememberMe = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String inputEmail = "";
   String inputPw = "";
 
-  String serverURL =
-      "http://211.243.47.122:3001/login"; // local : http://211.243.47.122:3001/check
+  String serverURL = "http://211.243.47.122:3001/login";
 
   @override
   Widget build(BuildContext context) {
@@ -146,29 +145,6 @@ class _SignInPageState extends State<SignInPage> {
                         onPressed: () async {
                           if (_formKey.currentState?.validate() ?? false) {
                             final response = await http.post(
-                                Uri.parse(serverURL), //서버에 요청
-                                headers: <String, String>{
-                                  'Content-Type':
-                                      'application/json; charset=UTF-8'
-                                }, //여기 변환인가?
-                                body: jsonEncode(<String, String>{
-                                  'email': inputEmail,
-                                  'password': inputPw
-                                }) //전달할 값
-
-                                );
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      jsonDecode(response.body)['exists']
-                                          ? "true"
-                                          : "false")),
-                            );
-                            return null;
-                          }
-
-                          if (_formKey.currentState?.validate() ?? false) {
-                            final response = await http.post(
                                 Uri.parse(serverURL),
                                 headers: <String, String>{
                                   'Content-Type':
@@ -178,17 +154,11 @@ class _SignInPageState extends State<SignInPage> {
                                   'email': inputEmail,
                                   'password': inputPw
                                 }));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(
-                                      jsonDecode(response.body)['exists'])),
-                            );
-                            if (response.statusCode == 200) //서버 에러 확인
-                            {
-                              final result =
-                                  jsonDecode(response.body); // response 번역
-                              if (result['exists'] == true) // 있으면 페이지 이동
-                              {
+
+                            if (response.statusCode == 200) {
+                              final result = jsonDecode(response.body);
+                              token = result;
+                              if (result != null) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -202,13 +172,39 @@ class _SignInPageState extends State<SignInPage> {
                               }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                  //SnackBar(content: Text('서버 오류가 발생했습니다.')),
                                   SnackBar(content: Text('서버 오류가 발생했습니다.')));
                             }
                           }
                         },
                       ),
                     ),
+                    _gap(),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4)),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Text(
+                            '회원가입',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        onPressed: () async {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SigninPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    )
                   ],
                 ),
               ),
